@@ -1,6 +1,5 @@
 #include "./batteryMonitorUI.h"
 #include "system/device_model.h"
-
 #include "../batmon/batmonDB.h"
 
 static bool quit = false;
@@ -29,7 +28,6 @@ typedef struct {
 } graph_spot;
 
 graph_spot graphic[GRAPH_MAX_FULL_PAGES * GRAPH_DISPLAY_SIZE_X];
-//int graphic_size;
 
 static void sigHandler(int sig)
 {
@@ -169,24 +167,23 @@ int renderTextAlignRight(const char *text, TTF_Font *font, SDL_Color color, SDL_
 
 void switch_zoom_profile(int segment_duration)
 {
-
     switch (segment_duration) {
     case 7200:
-        // A segemmt is 120 minutes
+        // A segment is 120 minutes
         sprintf(label[0], "%s", "4h");
         sprintf(label[1], "%s", "8h");
         sprintf(label[2], "%s", "12h");
         sprintf(label[3], "%s", "16h");
         break;
     case 3600:
-        // A segemmt is 60 minutes
+        // A segment is 60 minutes
         sprintf(label[0], "%s", "2h");
         sprintf(label[1], "%s", "4h");
         sprintf(label[2], "%s", "6h");
         sprintf(label[3], "%s", "8h");
         break;
     case 1800:
-        // A segemmt is 30 minutes
+        // A segment is 30 minutes
         sprintf(label[0], "%s", "1h");
         sprintf(label[1], "%s", "2h");
         sprintf(label[2], "%s", "3h");
@@ -272,7 +269,6 @@ void compute_graph(void)
                     int segment = previous_index - current_index;
                     if (segment > 1) {
                         for (int i = 1; i < segment; i++) {
-                            //  graphic[current_index+i].pixel_height = graphic[current_index].pixel_height + (int)(((graphic[previous_index].pixel_height-current_value)/segment-1)*i);
                             graphic[current_index + i].pixel_height = graphic[previous_index].pixel_height;
                             graphic[current_index + i].is_charging = graphic[previous_index].is_charging;
                         }
@@ -291,7 +287,6 @@ void compute_graph(void)
 
                                 if (estimated_playtime < GRAPH_MAX_PLAUSIBLE_ESTIMATION) {
                                     secondsToHoursMinutes(estimated_playtime, session_left);
-                                    // shift of the existing logs to make room for the estimation line
                                     int room_to_make = estimation_line_size + GRAPH_ESTIMATED_LINE_GAP;
                                     if (current_index - room_to_make >= 0) {
                                         for (int i = current_index; i < graph_max_size; i++) {
@@ -414,7 +409,7 @@ void renderPage()
 
             bool is_charging = graphic[i + current_index].is_charging;
             bool is_estimated = graphic[i + current_index].is_estimated;
-            //if ((!is_charging)
+
             if ((!is_charging) && (!is_estimated))
                 pixel_color = white_pixel_color;
             else if (is_charging)
@@ -435,7 +430,6 @@ void renderPage()
                     }
                 }
 
-                // Graph background
                 if ((x % GRAPH_BACKGROUND_OPACITY) == 0) {
                     for (int k = y; k > GRAPH_DISPLAY_START_Y; k--) {
                         if ((k % GRAPH_BACKGROUND_OPACITY) == 0) {
